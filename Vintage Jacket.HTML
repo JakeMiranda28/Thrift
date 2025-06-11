@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NBA Vintage Leather Jacket</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .search-container {
+      max-width: 1100px;
+      margin: 0 auto 30px auto;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .search-container input[type="text"] {
+      flex: 1;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .search-container input[type="text"]:focus {
+      border-color: #e65100;
+    }
+    .search-container button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #e65100;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .search-container button:hover {
+      background-color: #bf4700;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1100px;
+      margin: auto;
+      gap: 40px;
+    }
+
+    .image-viewer {
+      position: relative;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .main-image {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0,0,0,0.4);
+      color: white;
+      font-size: 24px;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      user-select: none;
+      z-index: 10;
+    }
+
+    .arrow.left {
+      left: 10px;
+    }
+
+    .arrow.right {
+      right: 10px;
+    }
+
+    .thumbnail-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .thumbnail-row img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .thumbnail-row img.active,
+    .thumbnail-row img:hover {
+      border-color: #e65100;
+    }
+
+    .details {
+      flex: 1;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 26px;
+    }
+
+    .price {
+      font-size: 24px;
+      color: #e65100;
+      margin: 10px 0;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    .sizes button,
+    .quantity button {
+      padding: 10px 15px;
+      margin: 5px 5px 5px 0;
+      border: 1px solid #ccc;
+      background-color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .actions {
+      margin-top: 20px;
+    }
+
+    .actions button {
+      padding: 12px 24px;
+      font-size: 16px;
+      margin-right: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .add-cart {
+      background-color: white;
+      color: #e65100;
+      border: 2px solid #e65100;
+    }
+
+    .buy-now {
+      background-color: #e65100;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .thumbnail-row {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .search-container {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search for products..." />
+    <button onclick="searchProduct()">Search</button>
+  </div>
+
+  <div class="container">
+    <!-- Image Gallery -->
+    <div class="image-viewer">
+      <img id="mainImage" class="main-image" src="Vintage Jacket.webp" alt="Vintage Jacket" />
+      <div class="arrow left" onclick="navigate(-1)">&#10094;</div>
+      <div class="arrow right" onclick="navigate(1)">&#10095;</div>
+    </div>
+
+    <div class="thumbnail-row">
+      <img src="Vintage Jacket.webp" onclick="showImage(0)" class="active" alt="Thumbnail 1">
+      <img src="Vintage Jacket -1.webp" onclick="showImage(1)" alt="Thumbnail 2">
+      <img src="Vintage Jacket - 2.webp" onclick="showImage(2)" alt="Thumbnail 3">
+    </div>
+
+    <!-- Product Info -->
+    <div class="details">
+      <h1 id="productTitle">NBA Vintage Leather Jacket</h1>
+      <div class="price" id="productPrice">₱10,000</div>
+
+      <div class="label">Color</div>
+      <p id="productColor">White</p>
+
+      <div class="label">Size</div>
+      <div class="sizes">
+        <button>36</button><button>37</button><button>38</button><button>39</button>
+        <button>40</button><button>41</button><button>42</button><button>43</button>
+        <button>44</button><button>45</button><button>46</button>
+      </div>
+
+      <div class="label">Quantity</div>
+      <div class="quantity">
+        <button onclick="updateQty(-1)">−</button>
+        <span id="qty" style="margin: 0 10px;">1</span>
+        <button onclick="updateQty(1)">+</button>
+      </div>
+
+      <div class="actions">
+        <button class="add-cart">Add to Cart</button>
+        <button class="buy-now">Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      {
+        title: "NBA Vintage Leather Jacket",
+        price: "₱10,000",
+        color: "White",
+        images: [
+          "Vintage Jacket.webp",
+          "Vintage Jacket -1.webp",
+          "Vintage Jacket - 2.webp"
+        ]
+      }
+    ];
+
+    let currentImage = 0;
+    let currentProductIndex = 0;
+
+    function showImage(index) {
+      const product = products[currentProductIndex];
+      currentImage = index;
+      document.getElementById("mainImage").src = product.images[currentImage];
+      const thumbnails = document.querySelectorAll(".thumbnail-row img");
+      thumbnails.forEach((img, i) => {
+        img.classList.toggle("active", i === index);
+      });
+    }
+
+    function navigate(direction) {
+      const product = products[currentProductIndex];
+      currentImage = (currentImage + direction + product.images.length) % product.images.length;
+      showImage(currentImage);
+    }
+
+    let qty = 1;
+    function updateQty(change) {
+      qty += change;
+      if (qty < 1) qty = 1;
+      document.getElementById("qty").innerText = qty;
+    }
+
+    function searchProduct() {
+      const input = document.getElementById("searchInput").value.trim().toLowerCase();
+      if (!input) {
+        alert("Please enter a product name to search.");
+        return;
+      }
+
+      const foundIndex = products.findIndex(p => p.title.toLowerCase().includes(input));
+      if (foundIndex === -1) {
+        alert("Sorry, product not found.");
+        return;
+      }
+
+      currentProductIndex = foundIndex;
+      currentImage = 0;
+      const product = products[currentProductIndex];
+
+      document.getElementById("mainImage").src = product.images[0];
+
+      const thumbnailRow = document.querySelector(".thumbnail-row");
+      thumbnailRow.innerHTML = "";
+      product.images.forEach((src, i) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `Thumbnail ${i + 1}`;
+        img.onclick = () => showImage(i);
+        if (i === 0) img.classList.add("active");
+        thumbnailRow.appendChild(img);
+      });
+
+      document.getElementById("productTitle").innerText = product.title;
+      document.getElementById("productPrice").innerText = product.price;
+      document.getElementById("productColor").innerText = product.color;
+
+      qty = 1;
+      document.getElementById("qty").innerText = qty;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        navigate(-1);
+      } else if (e.key === 'ArrowRight') {
+        navigate(1);
+      }
+    });
+
+    showImage(0);
+  </script>
+</body>
+</html>
