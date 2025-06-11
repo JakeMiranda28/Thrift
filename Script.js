@@ -1,43 +1,51 @@
-document.querySelectorAll(".SHOP NOW-button").forEach(button => {
+// Use the correct class name for your buttons (e.g., .shop-now-btn)
+document.querySelectorAll(".shop-now-btn").forEach(button => {
   button.addEventListener("click", function(e) {
     e.preventDefault();
 
     const link = this.getAttribute("data-link");
     if (link) {
-      // Redirect to the link in the same tab if data-link exists
       window.location.href = link;
       return;
     }
 
-    // Otherwise, show product SHOP NOW modal
-
-    // Get the parent product card of the clicked button
+    // Find parent product card
     const productCard = this.closest('.product-card');
     if (!productCard) return;
 
-    // Extract product info from the card
-    const title = productCard.querySelector('h4').innerText;
-    const price = productCard.querySelector('.price').innerText;
-    const imgSrc = productCard.querySelector('img').src;
+    // Extract info from card
+    const title = productCard.querySelector('h4')?.innerText || "";
+    const price = productCard.querySelector('.price')?.innerText || "";
+    const imgSrc = productCard.querySelector('img')?.src || "";
 
-    // Fill the modal content dynamically
-    document.getElementById("modalTitle").innerText = title;
-    document.getElementById("modalPrice").innerText = price;
-    document.getElementById("modalImage").src = imgSrc;
+    // Fill modal fields
+    const modalTitle = document.getElementById("modalTitle");
+    const modalPrice = document.getElementById("modalPrice");
+    const modalImage = document.getElementById("modalImage");
+    const productModal = document.getElementById("productModal");
 
-    // Show the modal
-    document.getElementById("productModal").style.display = "flex";
+    if (modalTitle) modalTitle.innerText = title;
+    if (modalPrice) modalPrice.innerText = price;
+    if (modalImage) modalImage.src = imgSrc;
+    if (productModal) productModal.style.display = "flex";
   });
 });
 
-// Close product SHOP NOW modal when clicking the close button
-document.getElementById("closeModal").addEventListener("click", function() {
-  document.getElementById("productModal").style.display = "none";
-});
+// Close button
+const closeModalBtn = document.getElementById("closeModal");
+if (closeModalBtn) {
+  closeModalBtn.addEventListener("click", function() {
+    const productModal = document.getElementById("productModal");
+    if (productModal) productModal.style.display = "none";
+  });
+}
 
-// Optional: Close modal if clicking outside modal content
-document.getElementById("productModal").addEventListener("click", function(e) {
-  if (e.target === this) {
-    this.style.display = "none";
-  }
-});
+// Optional: Click outside modal to close
+const productModal = document.getElementById("productModal");
+if (productModal) {
+  productModal.addEventListener("click", function(e) {
+    if (e.target === this) {
+      this.style.display = "none";
+    }
+  });
+}
