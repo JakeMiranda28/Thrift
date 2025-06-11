@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Thrift Store</title>
+  <style>
+    body {
+      background-color: #ffffff;
+      color: #1a1a1a;
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      transition: opacity 0.3s ease;
+      opacity: 1;
+    }
+
+    header {
+      background-color: #ffffff;
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin: 0;
+      font-weight: 900;
+      color: #1a1a1a;
+    }
+
+    .nav-wrapper {
+      flex-grow: 1;
+      overflow-x: auto;
+      margin-left: 20px;
+    }
+
+    header nav {
+      display: flex;
+      gap: 20px;
+      white-space: nowrap;
+    }
+
+    header nav a {
+      padding: 5px 10px;
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      outline: none;
+      user-select: none;
+    }
+
+    header nav a:hover,
+    header nav a:focus,
+    header nav a:active {
+      background-color: transparent !important;
+      color: black !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    header nav a.active {
+      color: #e65100;
+      border-bottom: 2px solid #e65100;
+    }
+
+    .hero-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 30px;
+      gap: 40px;
+      min-height: 500px;
+      position: relative;
+      background-color: #ffffff;
+      transition: all 0.7s ease;
+      flex-wrap: wrap;
+    }
+
+    .image-container {
+      flex: 1 1 55%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.7s ease;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      max-height: 500px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: all 0.7s ease;
+    }
+
+    .image-container.shrunk {
+      flex: 0 0 40%;
+      transform: scale(0.85);
+      filter: brightness(0.9);
+    }
+
+    .banner-text {
+      flex: 1 1 40%;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px 40px;
+      border-radius: 10px;
+      max-width: 350px;
+      text-align: left;
+      color: #1a1a1a;
+      transform: translateX(150%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.7s ease, opacity 0.7s ease;
+    }
+
+    .banner-text.revealed {
+      transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .banner-text h2 {
+      margin: 0 0 20px;
+      font-size: 32px;
+      font-weight: 900;
+    }
+
+    .banner-text p {
+      margin: 10px 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .banner-text .price {
+      font-size: 28px;
+      font-weight: 900;
+      color: #e65100;
+      margin: 15px 0 0 0;
+    }
+
+    .shop-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #111;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    .shop-button:hover {
+      background-color: #444;
+    }
+
+    .arrow-button {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #111;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 3;
+      transition: background 0.3s ease;
+    }
+
+    .arrow-button:hover {
+      background-color: #444;
+    }
+
+    .form-popup, #signup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      z-index: 999;
+      width: 300px;
+    }
+
+    .form-popup input, #signup input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .form-popup button, #signup button {
+      background-color: #111;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .form-popup .close-btn, #signup .close-btn {
+      background-color: #888;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #show-signup {
+      margin: 20px auto;
+      display: block;
+      background-color: #e65100;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    #show-signup:hover {
+      background-color: #bf360c;
+    }
+
+    @media (max-width: 768px) {
+      .hero-banner {
+        flex-direction: column;
+        padding: 60px 20px;
+      }
+
+      .image-container img {
+        max-height: 60vh;
+      }
+
+      .banner-text {
+        max-width: 100%;
+      }
+
+      .arrow-button {
+        bottom: 30px;
+        top: auto;
+        right: 20px;
+      }
+    }
+
+    /* Product Listing Insert */
+    .product-listing {
+      padding: 40px 20px;
+      background-color: #f5f5f5;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .product-card {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-card img {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .product-card h4 {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 10px 0 5px;
+      color: #333;
+    }
+
+    .product-card .price {
+      color: #e65100;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* New details button style as button */
+    .details-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #e65100;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+      text-align: center;
+    }
+
+    .details-button:hover {
+      background-color: #bf360c;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Thrift Store</h1>
+    <div class="nav-wrapper">
+      <nav>
+        <a href="#" id="nav-men">Men</a>
+        <a href="#">Women</a>
+        <a href="#">Luxury</a>
+        <a href="#">Beauty</a>
+        <a href="#">Kids</a>
+        <a href="#">Sneakers</a>
+        <a href="#">Accessories</a>
+        <a href="#">Sale</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- INSERTED PRODUCT LISTING -->
+  <section class="product-listing">
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="Vintage Jacket.webp" alt="Product 1" />
+        <h4>Vintage Hoodie</h4>
+        <p class="price">₱10,000</p>
+        <button class="SHOP NOW-button">SHOP NOW</button>
+      </div>
+      <div class="product-card">
+        <img src="VCAP.webp" alt="Product 2" />
+        <h4>Chicago Bulls Vintage Snapback</h4>
+        <p class="price">₱3,000</p>
+        <button class="SHOP NOW-button">SHOP NOW</button>
+      </div>
+      <div class="product-card">
+        <img src="J1TW-LEFT SIDE.webp" alt="Product 3" />
+        <h4>Jordan 1 Triple White Low</h4>
+        <p class="price">₱4,000</p>
+        <button class="SHOP NOW-button">SHOP NOW</button>
+      </div>
+      <div class="product-card">
+        <img src="Vintage Shirt.webp" alt="Product 4" />
+        <h4>Vintage Shirt</h4>
+        <p class="price">₱2,0000</p>
+        <button class="SHOP NOW-button">SHOP NOW</button>
+      </div>
+      <div class="product-card">
+        <img src="Track pants.webp" alt="Product 5" />
+        <h4>Track Pants</h4>
+        <p class="price"> 2,000</p>
+        <button class="SHOP NOW-button">SHOP NOW</button>
+        </div>
+      <div class="product-card">
+        <img src="Casio Watch.webp" alt="Product 6" />
+        <h4>Casio Watch</h4>
+        <p class="price"> 5,000 </p>
+        <button  class="SHOP NOW-button">SHOP NOW</button>
+      </div> 
+      <div class="Product-card">
+        <img src="Sun glass.webp" alt="Product 7" />
+        <h4>Sun Glass</h4>
+        <p class="price">3,000</p>
+        <button class="SHOP NOW">SHOP NOW</button>
+      </div>
+        </div>
+      </div>
+      
+      </div>
+    </div>
+  </section> 
+  
+    <section class="hero-banner">
+    <div class="image-container" id="modelImage">
+      <img src="Men Jacket.png.PNG" alt="Model Wearing Jacket" />
+    </div>
+
+    <button class="arrow-button">→</button>
+
+    <div class="banner-text" id="productSHOPNOW">
+      <h2>Streetwear Oversized Jacket</h2>
+      <p>Modern, breathable, and perfect for urban wear. Our oversized jacket brings out the bold in you with minimal effort.</p>
+      <p class="price">₱1,000</p>
+      <button class="shop-button">Shop Now</button>
+    </div>
+  </section>
+
+
+  <!-- Order Form Popup -->
+  <div class="form-popup" id="shopForm">
+    <form>
+      <input type="text" placeholder="Full Name" required />
+      <input type
